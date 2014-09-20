@@ -1,10 +1,8 @@
 run_analysis <- function(){
     ## This function is for linux operating systems only.
-    ## This function assumes you unzipped the UCI HAR Dataset into your working directory.
-    ## The dataset files should be in the following folders inside your working directory:
-    ## - UCI HAR Dataset
-    ## --features.txt
-    ## -- NEED TO FLESH OUT WITH COMPLETE EXPECT FILE STRUCTURE    
+    ## This function assumes you unzipped the UCI HAR Dataset into your working directory into a folder
+    ## name UCI HAR Dataset.
+    
     require(plyr)
 
     ## STEP 1: MERGE DATA SETS
@@ -53,9 +51,8 @@ run_analysis <- function(){
     
         ## Remove parentheses from column names
         names(data_mean_std) <- gsub('\\(|\\)',"",names(data_mean_std), perl = TRUE)
-        ## Make syntactically valid column names
-        names(data_mean_std) <- make.names(names(data_mean_std))
-        ## Make column names clearer
+        
+        ## Expand abbreviated words in column names
         names(data_mean_std) <- gsub('Acc',"Acceleration",names(data_mean_std))
         names(data_mean_std) <- gsub('GyroJerk',"AngularAcceleration",names(data_mean_std))
         names(data_mean_std) <- gsub('Gyro',"AngularSpeed",names(data_mean_std))
@@ -67,11 +64,12 @@ run_analysis <- function(){
         names(data_mean_std) <- gsub('Freq\\.',"Frequency.",names(data_mean_std))
         names(data_mean_std) <- gsub('Freq$',"Frequency",names(data_mean_std))
         
+        ## Make syntactically valid column names
+        names(data_mean_std) <- make.names(names(data_mean_std), allow_ = TRUE, unique = TRUE)
+        
     ## STEP 5: FROM THE DATA SET IN STEP 4, CREATE A INDEPENDANT TIDY DATA SET
-    ## WITHT THE AVERAGE OF EACH VARIABLE FOR EACH ACTIVITY AND EACH SUBJECT
+    ## WITH THE AVERAGE OF EACH VARIABLE FOR EACH ACTIVITY AND EACH SUBJECT
         
         data_avg_by_act_sub = ddply(data_mean_std, c("Subject","Activity"), numcolwise(mean))
-        write.table(data_avg_by_act_sub, file = "UCI_HAR_Tidy_Data.txt")
-    
-    
+        write.table(data_avg_by_act_sub, row.name=FALSE, file = "UCI_HAR_Tidy_Data.txt")
 }
