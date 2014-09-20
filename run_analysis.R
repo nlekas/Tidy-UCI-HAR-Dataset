@@ -1,11 +1,11 @@
-## This function is for linux operating systems only.
-## This function assumes you unzipped the UCI HAR Dataset into your working directory.
-## The dataset files should be in the following folders inside your working directory:
-## - UCI HAR Dataset
-## --features.txt
-## -- NEED TO FLESH OUT WITH COMPLETE EXPECT FILE STRUCTURE
-
 run_analysis <- function(){
+    ## This function is for linux operating systems only.
+    ## This function assumes you unzipped the UCI HAR Dataset into your working directory.
+    ## The dataset files should be in the following folders inside your working directory:
+    ## - UCI HAR Dataset
+    ## --features.txt
+    ## -- NEED TO FLESH OUT WITH COMPLETE EXPECT FILE STRUCTURE    
+    require(plyr)
 
     ## STEP 1: MERGE DATA SETS
 
@@ -29,13 +29,13 @@ run_analysis <- function(){
         merged_data <- rbind(train_data, test_data)
             
         ## Label complete data
-        labels <- rbind(rbind(features, c(562, "Subject")), c(563, "ActivityId"))[,2]
+        labels <- rbind(rbind(features, c(562, "Subject")), c(563, "Activity"))[,2]
         names(merged_data) <- labels
     
     ## STEP 2: EXTRACT ONLY THE MEASUREMENTS ON THE MEAN AND STANDARD DEVIATION FOR EACH MEASUREMENT
         
         ## Remove columns that don't contain the words mean, std, Subject, or ActivityId.
-        data_mean_std <- merged_data[,grepl("mean|std|Subject|ActivityId", names(merged_data))]
+        data_mean_std <- merged_data[,grepl("mean|std|Subject|Activity", names(merged_data))]
         
         ## Remove meanFreq columns
         bad <- data_mean_std[,grepl("meanFreq", names(data_mean_std))]
@@ -69,6 +69,9 @@ run_analysis <- function(){
         
     ## STEP 5: FROM THE DATA SET IN STEP 4, CREATE A INDEPENDANT TIDY DATA SET
     ## WITHT THE AVERAGE OF EACH VARIABLE FOR EACH ACTIVITY AND EACH SUBJECT
+        
+        data_avg_by_act_sub = ddply(data_mean_std, c("Subject","Activity"), numcolwise(mean))
+        write.table(data_avg_by_act_sub, file = "UCI_HAR_Tidy_Data.txt")
     
     
 }
