@@ -1,10 +1,5 @@
----
-title: "UCI HAR Tidy Data Code Book"
-author: "Noah Lekas"
-date: "09/20/2014"
-output: html_document
----
-
+UCI HAR Tidy Data Code Book
+======================
 
 OVERVIEW OF THE DATA: 
 -------
